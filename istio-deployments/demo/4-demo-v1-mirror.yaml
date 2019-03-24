@@ -1,0 +1,170 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: "service-gateway"
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: "virtual-service-gateway"
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - "service-gateway"
+  http:
+  - match:
+    - uri:
+        prefix: /api/transactions    
+    route:
+    - destination:
+        host: "payments"    
+        port:
+          number: 8080        
+  - match:
+    - uri:
+        exact: /api/requesters
+    route:
+    - destination:
+        host: "payment-checker"
+        port:
+          number: 8080
+  - match:
+    - uri:
+        prefix: /api/orders
+    route:
+    - destination:
+        host: "crm"
+        port:
+          number: 8080
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: payments-virtual-service
+spec:
+  hosts:
+  - payments
+  http:
+  - route:
+    - destination:
+        host: payments
+        subset: v1
+      weight: 100       
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: payments-destination-rule
+spec:
+  host: payments
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v3
+    labels:
+      version: v3
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: payment-checker-virtual-service
+spec:
+  hosts:
+  - payment-checker
+  http:
+  - route:
+    - destination:
+        host: payment-checker
+        subset: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: payment-checker-destination-rule
+spec:
+  host: payment-checker
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: register-virtual-service
+spec:
+  hosts:
+  - register
+  http:
+  - route:
+    - destination:
+        host: register
+        subset: v2
+      weight: 0
+    - destination:
+        host: register
+        subset: v3
+      weight: 0
+    - destination:
+        host: register
+        subset: v1
+      weight: 100
+    mirror:
+      host: register
+      subset: v4      
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: register-destination-rule
+spec:
+  host: register
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+  - name: v3
+    labels:
+      version: v3
+  - name: v4
+    labels:
+      version: v4
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: crm-virtual-service
+spec:
+  hosts:
+  - crm
+  http:
+  - route:
+    - destination:
+        host: crm
+        subset: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: crm-destination-rule
+spec:
+  host: crm
+  subsets:
+  - name: v1
+    labels:
+      version: v1      

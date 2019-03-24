@@ -59,7 +59,7 @@ items:
           - name: JAEGER_SERVICE_NAME
             value: payment-checker
           - name: MONGO_HOST
-            value: mongodb.payments.svc.cluster.local
+            value: mongodb.database.svc.cluster.local
           - name: SERVER_PORT
             value: "8080"
           - name: JAEGER_HTTP_COLLECTOR_URL

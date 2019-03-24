@@ -10,7 +10,11 @@ spec:
     - destination:
         host: payments
         subset: v1
-      weight: 100    
+      weight: 100  
+    - destination:
+        host: payments
+        subset: v3
+      weight: 0        
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
