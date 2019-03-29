@@ -452,7 +452,7 @@ items:
             value: "http://jaeger-collector:14268/api/traces"
           - name: HTTP_LEVEL_LOGS
             value: "INFO"
-          image: claudioed/register:0.0.1-SNAPSHOT
+          image: claudioed/register:0.0.4-SNAPSHOT
           imagePullPolicy: Always
           livenessProbe:
             httpGet:

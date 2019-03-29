@@ -1,0 +1,83 @@
+---
+apiVersion: v1
+kind: List
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      expose: "true"
+      app: claims
+      group: tech.claudioed
+    name: claims
+  spec:
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: claims
+      group: tech.claudioed
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    labels:
+      version: v1
+      expose: "false"
+      app: claims
+      group: tech.claudioed
+    name: claims
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 2
+    selector:
+      matchLabels:
+        app: claims
+        group: tech.claudioed
+    template:
+      metadata:
+        labels:
+          app: claims
+          version: v1
+          group: tech.claudioed
+      spec:
+        containers:
+        - env:
+          - name: KUBERNETES_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: JAEGER_SERVICE_NAME
+            value: claims
+          - name: MONGO_HOST
+            value: "mongodb://mongodb.database.svc.cluster.local:27017"
+          - name: NATS_HOST
+            value: "nats://10.43.242.150:4222"
+          - name: NATS_USER
+            value: "nats_client"
+          - name: NATS_PASS
+            value: "DZ3mFLXEDO"
+          - name: JAEGER_HTTP_COLLECTOR_URL
+            value: "http://jaeger-collector:14268/api/traces"
+          image: claudioed/claims:0.0.1-SNAPSHOT
+          imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 180
+          name: claims
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 10
+          securityContext:
+            privileged: false
