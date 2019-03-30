@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: customers-virtual-service
+spec:
+  hosts:
+  - customers
+  http:
+  - route:
+    - destination:
+        host: customers
+        subset: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: customers-destination-rule
+spec:
+  host: customers
+  subsets:
+  - name: v1
+    labels:
+      version: v1

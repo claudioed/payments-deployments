@@ -1,0 +1,63 @@
+---
+apiVersion: v1
+kind: List
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      expose: "true"
+      app: customers
+      group: tech.claudioed
+    name: customers
+  spec:
+    ports:
+    - name: grpc
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: customers
+      group: tech.claudioed
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    labels:
+      version: v1
+      expose: "false"
+      app: customers
+      group: tech.claudioed
+    name: customers
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 2
+    selector:
+      matchLabels:
+        app: customers
+        group: tech.claudioed
+    template:
+      metadata:
+        labels:
+          app: customers
+          version: v1
+          group: tech.claudioed
+      spec:
+        containers:
+        - env:
+          - name: KUBERNETES_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: JAEGER_SERVICE_NAME
+            value: customers
+          - name: MONGO_HOST
+            value: "mongodb://mongodb.database.svc.cluster.local:27017"
+          image: claudioed/customer:0.0.1-SNAPSHOT
+          imagePullPolicy: Always
+          name: customers
+          ports:
+          - containerPort: 8080
+            name: grpc
+            protocol: TCP
+          securityContext:
+            privileged: false

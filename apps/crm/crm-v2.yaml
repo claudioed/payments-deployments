@@ -1,0 +1,78 @@
+---
+apiVersion: v1
+kind: List
+items:
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "8080"
+      prometheus.io/path: "/actuator/prometheus"
+    labels:
+      version: v2
+      expose: "false"
+      app: crm
+      group: tech.claudioed
+    name: crm-v2
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 2
+    selector:
+      matchLabels:
+        app: crm
+        group: tech.claudioed
+    template:
+      metadata:
+        annotations:
+          prometheus.io/scrape: "true"
+          prometheus.io/port: "8080"
+          prometheus.io/path: "/actuator/prometheus"
+        labels:
+          app: crm
+          version: v2
+          group: tech.claudioed
+      spec:
+        containers:
+        - env:
+          - name: KUBERNETES_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: JAEGER_SERVICE_NAME
+            value: crm
+          - name: MONGO_HOST
+            value: mongodb.database.svc.cluster.local
+          - name: SERVER_PORT
+            value: "8080"
+          - name: JAEGER_HTTP_COLLECTOR_URL
+            value: "http://jaeger-collector:14268/api/traces"
+          - name: HTTP_LEVEL_LOGS
+            value: "INFO"           
+          - name: NATS_HOST
+            value: "nats://10.43.242.150:4222"
+          - name: NATS_USER
+            value: "nats_client"
+          - name: NATS_PASS
+            value: "DZ3mFLXEDO"                   
+          image: claudioed/crm:0.0.2-SNAPSHOT
+          imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 180
+          name: crm
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 10
+          securityContext:
+            privileged: false
