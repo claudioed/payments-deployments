@@ -55,6 +55,14 @@ spec:
         host: "claims"
         port:
           number: 8080
+  tcp:
+  - match:
+    - port: 50051
+    route:
+    - destination:
+        host: customers
+        port:
+          number: 50051
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService

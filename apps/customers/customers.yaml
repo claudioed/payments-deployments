@@ -13,9 +13,9 @@ items:
   spec:
     ports:
     - name: grpc
-      port: 8080
+      port: 50051
       protocol: TCP
-      targetPort: 8080
+      targetPort: 50051
     selector:
       app: customers
       group: tech.claudioed
@@ -56,7 +56,7 @@ items:
           imagePullPolicy: Always
           name: customers
           ports:
-          - containerPort: 8080
+          - containerPort: 50051
             name: grpc
             protocol: TCP
           securityContext:
