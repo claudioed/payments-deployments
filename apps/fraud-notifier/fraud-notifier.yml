@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      labels:
+        version: v1
+        app: fraud-notifier
+        expose: "false"
+      name: fraud-notifier
+      namespace: payments
+    spec:
+      type: ClusterIP
+      ports:
+        - protocol: TCP
+          port: 8080
+          targetPort: 8080
+      selector:
+        app: fraud-notifier
+
+  - apiVersion: extensions/v1beta1
+    kind: Deployment
+    metadata:
+      labels:
+        version: v1
+        app: fraud-notifier
+        expose: "false"
+      name: fraud-notifier
+      namespace: payments
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: fraud-notifier
+      minReadySeconds: 10
+      template:
+        metadata:
+          labels:
+            version: v1
+            app: fraud-notifier
+            expose: "false"
+        spec:
+          containers:
+            - name: fraud-notifier
+              image: kurtis/fraud-notifier:1.0.0
+              ports:
+                - containerPort: 8080
+              env:
+                - name: HTTP_PORT
+                  value: "8080"
+                - name: MAIL_SERVER_ADDRESS
+                  value: "mail-mailhog.mail.svc.cluster.local"
+                - name: NATS_SERVER_ADDRESS
+                  value: "10.39.251.97"
+                - name: INVALIDATE_FRAUD_LINK
+                  value: "http://127.0.0.1/invalidate"
+                - name: NATS_USER
+                  value: "nats_client"
+                - name: NATS_PASS
+                  value: "DZ3mFLXEDO"
