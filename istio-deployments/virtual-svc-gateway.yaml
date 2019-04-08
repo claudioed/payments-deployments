@@ -10,12 +10,12 @@ spec:
   http:
   - match:
     - uri:
-        prefix: /api/transactions    
+        prefix: /api/transactions
     route:
     - destination:
-        host: "payments"    
+        host: "payments"
         port:
-          number: 8080        
+          number: 8080
   - match:
     - uri:
         exact: /api/requesters
@@ -30,5 +30,21 @@ spec:
     route:
     - destination:
         host: "crm"
+        port:
+          number: 8080
+  - match:
+    - uri:
+        prefix: /api/customers
+    route:
+    - destination:
+        host: "fraud-detection"
+        port:
+          number: 8080
+  - match:
+    - uri:
+        prefix: /api/frauds
+    route:
+    - destination:
+        host: "fraud-detection"
         port:
           number: 8080
