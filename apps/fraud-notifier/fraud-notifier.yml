@@ -54,7 +54,7 @@ items:
                 - name: NATS_SERVER_ADDRESS
                   value: "10.39.251.97"
                 - name: INVALIDATE_FRAUD_LINK
-                  value: "http://127.0.0.1/invalidate"
+                  value: "http://35.184.78.7/api/frauds/{fraudId}/invalidation"
                 - name: NATS_USER
                   value: "nats_client"
                 - name: NATS_PASS
