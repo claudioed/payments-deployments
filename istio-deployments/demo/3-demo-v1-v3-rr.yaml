@@ -245,3 +245,51 @@ spec:
   - name: v1
     labels:
       version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: payments-authorization-virtual-service
+spec:
+  hosts:
+  - payments-authorization
+  http:
+  - route:
+    - destination:
+        host: payments-authorization
+        subset: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: payments-authorization-destination-rule
+spec:
+  host: payments-authorization
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: fraud-detection-virtual-service
+spec:
+  hosts:
+  - fraud-detection
+  http:
+  - route:
+    - destination:
+        host: fraud-detection
+        subset: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: fraud-detection-destination-rule
+spec:
+  host: fraud-detection
+  subsets:
+  - name: v1
+    labels:
+      version: v1      

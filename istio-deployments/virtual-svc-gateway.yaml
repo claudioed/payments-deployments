@@ -48,3 +48,11 @@ spec:
         host: "fraud-detection"
         port:
           number: 8080
+  - match:
+    - uri:
+        prefix: /api/authorizations
+    route:
+    - destination:
+        host: "payments-authorization"
+        port:
+          number: 8080          
