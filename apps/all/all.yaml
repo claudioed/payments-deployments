@@ -168,10 +168,17 @@ items:
           - name: HTTP_LEVEL_LOGS
             value: "INFO"
           - name: NATS_HOST
-            value: "nats://10.43.242.150:4222"
+            value: "nats://10.39.251.97:4222"
           - name: NATS_USER
             value: "nats_client"
-          - name: NATS_PASS            
+          - name: NATS_PASS
+            value: "DZ3mFLXEDO"
+          - name: CUSTOMER_SERVICE_HOST
+            value: customers.payments.svc.cluster.local
+          - name: CUSTOMER_SERVICE_PORT
+            value: '50051'   
+          - name: PAYMENT_AUTH_SVC_URL
+            value: http://payments-authorization:8080                  
           image: claudioed/payments:0.0.1-SNAPSHOT
           imagePullPolicy: Always
           livenessProbe:
@@ -663,7 +670,7 @@ items:
           - name: HTTP_LEVEL_LOGS
             value: "INFO"           
           - name: NATS_HOST
-            value: "nats://10.43.242.150:4222"
+            value: "nats://10.39.251.97:4222"
           - name: NATS_USER
             value: "nats_client"
           - name: NATS_PASS
