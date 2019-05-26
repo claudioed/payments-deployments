@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      labels:
+        expose: "true"
+        app: product
+      name: product
+    spec:
+      ports:
+        - name: http
+          port: 8080
+          protocol: TCP
+          targetPort: 8080
+      selector:
+        app: product
+  - apiVersion: extensions/v1beta1
+    kind: Deployment
+    metadata:
+      labels:
+        version: v1
+        expose: "false"
+        app: product
+      name: product
+    spec:
+      replicas: 1
+      revisionHistoryLimit: 2
+      selector:
+        matchLabels:
+          app: product
+      template:
+        metadata:
+          labels:
+            app: product
+            version: v1
+        spec:
+          containers:
+            - env:
+                - name: KUBERNETES_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      apiVersion: v1
+                      fieldPath: metadata.namespace
+                - name: MONGO_HOST
+                  value: mongodb.database.svc.cluster.local
+                - name: NATS_HOST
+                  value: 10.39.251.97
+                - name: NATS_USER
+                  value: nats_client        
+                - name: NATS_PASS
+                  value: DZ3mFLXEDO
+                - name: JAEGER_ENDPOINT
+                  value: http://jaeger-collector:14268/api/traces
+                - name: CRM_SERVICE_HOST
+                  value: crm.payments.svc.cluster.local
+                - name: CRM_PORT 
+                  value: '8080'
+              name: product
+              image: larchanjo/product:latest
+              imagePullPolicy: Always
+              ports:
+                - containerPort: 8080
+                  name: http
+                  protocol: TCP
+              readinessProbe:
+                httpGet:
+                  path: /health
+                  port: 8080
+                  scheme: HTTP
+                initialDelaySeconds: 60
+              livenessProbe:
+                httpGet:
+                  path: /health
+                  port: 8080
+                  scheme: HTTP
+                initialDelaySeconds: 120
+              securityContext:
+                privileged: false
