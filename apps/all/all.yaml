@@ -550,7 +550,7 @@ items:
       expose: "false"
       app: crm
       group: tech.claudioed
-    name: crm
+    name: crm-v1
   spec:
     replicas: 1
     revisionHistoryLimit: 2
@@ -567,80 +567,6 @@ items:
         labels:
           app: crm
           version: v1
-          group: tech.claudioed
-      spec:
-        containers:       
-        - env:
-          - name: KUBERNETES_NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
-          - name: JAEGER_SERVICE_NAME
-            value: crm            
-          - name: JAEGER_ENDPOINT
-            value: "http://jaeger-collector.istio-system.svc:14268/api/traces"
-          - name: JAEGER_PROPAGATION
-            value: b3
-          - name: JAEGER_SAMPLER_TYPE
-            value: const
-          - name: JAEGER_SAMPLER_PARAM
-            value: "1"
-          - name: MONGO_HOST
-            value: mongodb.database.svc.cluster.local
-          - name: SERVER_PORT
-            value: "8080"
-          - name: HTTP_LEVEL_LOGS
-            value: "INFO"                  
-          image: claudioed/crm:0.0.1-SNAPSHOT
-          imagePullPolicy: Always
-          livenessProbe:
-            httpGet:
-              path: /actuator/health
-              port: 8080
-              scheme: HTTP
-            initialDelaySeconds: 180
-          name: crm
-          ports:
-          - containerPort: 8080
-            name: http
-            protocol: TCP
-          readinessProbe:
-            httpGet:
-              path: /actuator/health
-              port: 8080
-              scheme: HTTP
-            initialDelaySeconds: 10
-          securityContext:
-            privileged: false
-- apiVersion: extensions/v1beta1
-  kind: Deployment
-  metadata:
-    annotations:
-      prometheus.io/scrape: "true"
-      prometheus.io/port: "8080"
-      prometheus.io/path: "/actuator/prometheus"
-    labels:
-      version: v2
-      expose: "false"
-      app: crm
-      group: tech.claudioed
-    name: crm-v2
-  spec:
-    replicas: 1
-    revisionHistoryLimit: 2
-    selector:
-      matchLabels:
-        app: crm
-        group: tech.claudioed
-    template:
-      metadata:
-        annotations:
-          prometheus.io/scrape: "true"
-          prometheus.io/port: "8080"
-          prometheus.io/path: "/actuator/prometheus"
-        labels:
-          app: crm
-          version: v2
           group: tech.claudioed
       spec:
         containers:
@@ -674,8 +600,12 @@ items:
           - name: NATS_USER
             value: "nats_client"
           - name: NATS_PASS
-            value: "DZ3mFLXEDO"                   
-          image: claudioed/crm:0.0.2-SNAPSHOT
+            value: "DZ3mFLXEDO"
+          - name: CUSTOMER_SERVICE_HOST
+            value: customers.payments.svc.cluster.local
+          - name: CUSTOMER_SERVICE_PORT
+            value: '50051'                        
+          image: claudioed/crm:0.0.1-SNAPSHOT
           imagePullPolicy: Always
           livenessProbe:
             httpGet:

@@ -55,7 +55,23 @@ spec:
     - destination:
         host: "payments-authorization"
         port:
+          number: 8080
+  - match:
+    - uri:
+        prefix: /api/issuers
+    route:
+    - destination:
+        host: "systems"
+        port:
           number: 8080          
+  - match:
+    - uri:
+        prefix: /api/crms
+    route:
+    - destination:
+        host: "systems"
+        port:
+          number: 8080
   tcp:
   - match:
     - port: 50051

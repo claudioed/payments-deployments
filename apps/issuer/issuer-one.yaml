@@ -7,9 +7,9 @@ items:
   metadata:
     labels:
       expose: "true"
-      app: claims
+      app: issuer-one
       group: tech.claudioed
-    name: claims
+    name: issuer-one
   spec:
     ports:
     - name: http
@@ -17,28 +17,36 @@ items:
       protocol: TCP
       targetPort: 8080
     selector:
-      app: claims
+      app: issuer-one
       group: tech.claudioed
 - apiVersion: extensions/v1beta1
   kind: Deployment
   metadata:
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "50051"
+      prometheus.io/path: "/actuator/prometheus"
     labels:
       version: v1
       expose: "false"
-      app: claims
+      app: issuer-one
       group: tech.claudioed
-    name: claims
+    name: issuer-one
   spec:
     replicas: 1
     revisionHistoryLimit: 2
     selector:
       matchLabels:
-        app: claims
+        app: issuer-one
         group: tech.claudioed
     template:
       metadata:
+        annotations:
+          prometheus.io/scrape: "true"
+          prometheus.io/port: "50051"
+          prometheus.io/path: "/actuator/prometheus"
         labels:
-          app: claims
+          app: issuer-one
           version: v1
           group: tech.claudioed
       spec:
@@ -48,36 +56,34 @@ items:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          - name: ISSUER_NAME
+            value: issuer-one                
           - name: JAEGER_SERVICE_NAME
-            value: claims
+            value: issuer-one
           - name: MONGO_HOST
-            value: "mongodb://mongodb.database.svc.cluster.local:27017"
+            value: mongodb.database.svc.cluster.local
+          - name: GRPC_SERVER_PORT
+            value: "50051"            
+          - name: JAEGER_ENDPOINT
+            value: "http://jaeger-collector:14268/api/traces"
+          - name: HTTP_LEVEL_LOGS
+            value: "INFO"
           - name: NATS_HOST
             value: "nats://10.3.254.83:4222"
           - name: NATS_USER
             value: "nats_client"
           - name: NATS_PASS
             value: "DZ3mFLXEDO"
-          - name: JAEGER_HTTP_COLLECTOR_URL
-            value: "http://jaeger-collector:14268/api/traces"
-          image: claudioed/claims:0.0.1-SNAPSHOT
+          - name: VAULT_SERVICE_HOST
+            value: "vault.payments.svc.cluster.local"
+          - name: VAULT_SERVICE_PORT
+            value: "50051"                        
+          image: claudioed/issuer:0.0.1-SNAPSHOT
           imagePullPolicy: Always
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 8080
-              scheme: HTTP
-            initialDelaySeconds: 180
-          name: claims
+          name: issuer-one
           ports:
-          - containerPort: 8080
-            name: http
+          - containerPort: 50051
+            name: grpc
             protocol: TCP
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 8080
-              scheme: HTTP
-            initialDelaySeconds: 10
           securityContext:
             privileged: false

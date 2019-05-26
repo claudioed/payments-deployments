@@ -7,9 +7,9 @@ items:
   metadata:
     labels:
       expose: "true"
-      app: claims
+      app: shipment
       group: tech.claudioed
-    name: claims
+    name: shipment
   spec:
     ports:
     - name: http
@@ -17,28 +17,36 @@ items:
       protocol: TCP
       targetPort: 8080
     selector:
-      app: claims
+      app: shipment
       group: tech.claudioed
 - apiVersion: extensions/v1beta1
   kind: Deployment
   metadata:
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "8080"
+      prometheus.io/path: "/metrics"
     labels:
       version: v1
       expose: "false"
-      app: claims
+      app: shipment
       group: tech.claudioed
-    name: claims
+    name: shipment
   spec:
     replicas: 1
     revisionHistoryLimit: 2
     selector:
       matchLabels:
-        app: claims
+        app: shipment
         group: tech.claudioed
     template:
       metadata:
+        annotations:
+          prometheus.io/scrape: "true"
+          prometheus.io/port: "8080"
+          prometheus.io/path: "/metrics"
         labels:
-          app: claims
+          app: shipment
           version: v1
           group: tech.claudioed
       spec:
@@ -48,19 +56,23 @@ items:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
-          - name: JAEGER_SERVICE_NAME
-            value: claims
-          - name: MONGO_HOST
-            value: "mongodb://mongodb.database.svc.cluster.local:27017"
           - name: NATS_HOST
-            value: "nats://10.3.254.83:4222"
+            value: "nats://10.39.251.97:4222"
           - name: NATS_USER
             value: "nats_client"
           - name: NATS_PASS
             value: "DZ3mFLXEDO"
-          - name: JAEGER_HTTP_COLLECTOR_URL
-            value: "http://jaeger-collector:14268/api/traces"
-          image: claudioed/claims:0.0.1-SNAPSHOT
+          - name: DB_URL
+            value: "jdbc:postgresql://postgresql-postgresql.database.svc.cluster.local:5432/postgres"   
+          - name: DB_USER
+            value: "postgres"             
+          - name: DB_PASS
+            value: "mercur@pay" 
+          - name: DB_ORM_GENERATION
+            value: "update"
+          - name: CRM_SERVICE_HOST
+            value: crm.payments.svc.cluster.local                                                           
+          image: claudioed/shipment:0.0.1-SNAPSHOT
           imagePullPolicy: Always
           livenessProbe:
             httpGet:
@@ -68,7 +80,7 @@ items:
               port: 8080
               scheme: HTTP
             initialDelaySeconds: 180
-          name: claims
+          name: shipment
           ports:
           - containerPort: 8080
             name: http
