@@ -72,6 +72,38 @@ spec:
         host: "systems"
         port:
           number: 8080
+  - match:
+    - uri:
+        prefix: /facade/api/customers
+    route:
+    - destination:
+        host: "facade"
+        port:
+          number: 8080        
+  - match:
+    - uri:
+        prefix: /facade/api/issuers
+    route:
+    - destination:
+        host: "facade"
+        port:
+          number: 8080
+  - match:
+    - uri:
+        prefix: /facade/api/vault
+    route:
+    - destination:
+        host: "facade"
+        port:
+          number: 8080
+  - match:
+    - uri:
+        prefix: /api/products
+    route:
+    - destination:
+        host: "product"
+        port:
+          number: 8080                      
   tcp:
   - match:
     - port: 50051

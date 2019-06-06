@@ -2,6 +2,23 @@
 apiVersion: v1
 kind: List
 items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      expose: "true"
+      app: facade
+      group: tech.claudioed
+    name: facade
+  spec:
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: facade
+      group: tech.claudioed
 - apiVersion: extensions/v1beta1
   kind: Deployment
   metadata:
@@ -10,17 +27,17 @@ items:
       prometheus.io/port: "8080"
       prometheus.io/path: "/actuator/prometheus"
     labels:
-      version: v2
+      version: v1
       expose: "false"
-      app: register
+      app: facade
       group: tech.claudioed
-    name: register-v2
+    name: facade
   spec:
     replicas: 1
     revisionHistoryLimit: 2
     selector:
       matchLabels:
-        app: register
+        app: facade
         group: tech.claudioed
     template:
       metadata:
@@ -29,29 +46,29 @@ items:
           prometheus.io/port: "8080"
           prometheus.io/path: "/actuator/prometheus"
         labels:
-          app: register
-          version: v2
+          app: facade
+          version: v1
           group: tech.claudioed
       spec:
-        containers:
+        containers:   
         - env:
           - name: KUBERNETES_NAMESPACE
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
-          - name: JAEGER_SERVICE_NAME
-            value: register
-          - name: MONGO_HOST
-            value: mongodb.payments.svc.cluster.local
-          - name: REGISTER_OPERATION
-            value: DENIED
-          - name: SERVER_PORT
-            value: "8080"
-          - name: JAEGER_HTTP_COLLECTOR_URL
-            value: "http://jaeger-collector:14268/api/traces"
-          - name: HTTP_LEVEL_LOGS
-            value: "INFO"
-          image: claudioed/register:0.0.1-SNAPSHOT
+          - name: VAULT_URL
+            value: vault.payments.svc.cluster.local
+          - name: VAULT_PORT
+            value: "50051"
+          - name: ISSUER_URL
+            value: issuer-one.payments.svc.cluster.local            
+          - name: ISSUER_PORT
+            value: "50051"
+          - name: CUSTOMER_URL
+            value: customers.payments.svc.cluster.local
+          - name: CUSTOMER_PORT
+            value: "50051"
+          image: claudioed/facade:0.0.1-SNAPSHOT
           imagePullPolicy: Always
           livenessProbe:
             httpGet:
@@ -59,7 +76,7 @@ items:
               port: 8080
               scheme: HTTP
             initialDelaySeconds: 180
-          name: register
+          name: requesters
           ports:
           - containerPort: 8080
             name: http

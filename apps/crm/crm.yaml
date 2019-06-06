@@ -59,13 +59,23 @@ items:
           - name: JAEGER_SERVICE_NAME
             value: crm
           - name: MONGO_HOST
-            value: mongodb.payments.svc.cluster.local
+            value: mongodb.database.svc.cluster.local
           - name: SERVER_PORT
             value: "8080"
           - name: JAEGER_HTTP_COLLECTOR_URL
             value: "http://jaeger-collector:14268/api/traces"
           - name: HTTP_LEVEL_LOGS
-            value: "INFO"                  
+            value: "INFO"           
+          - name: NATS_HOST
+            value: "nats://10.3.254.83:4222"
+          - name: NATS_USER
+            value: "nats_client"
+          - name: NATS_PASS
+            value: "DZ3mFLXEDO"
+          - name: CUSTOMER_SERVICE_HOST
+            value: customers.payments.svc.cluster.local
+          - name: CUSTOMER_SERVICE_PORT
+            value: "50051"                          
           image: claudioed/crm:0.0.1-SNAPSHOT
           imagePullPolicy: Always
           livenessProbe:

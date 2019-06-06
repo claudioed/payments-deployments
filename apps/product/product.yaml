@@ -44,9 +44,9 @@ items:
                       apiVersion: v1
                       fieldPath: metadata.namespace
                 - name: MONGO_HOST
-                  value: mongodb.database.svc.cluster.local
+                  value: "mongodb://mongodb.database.svc.cluster.local:27017"
                 - name: NATS_HOST
-                  value: 10.39.251.97
+                  value: "nats://10.3.254.83:4222"
                 - name: NATS_USER
                   value: nats_client        
                 - name: NATS_PASS
@@ -56,7 +56,7 @@ items:
                 - name: CRM_SERVICE_HOST
                   value: crm.payments.svc.cluster.local
                 - name: CRM_PORT 
-                  value: '8080'
+                  value: "8080"
               name: product
               image: larchanjo/product:latest
               imagePullPolicy: Always

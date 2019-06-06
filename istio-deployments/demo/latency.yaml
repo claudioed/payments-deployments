@@ -1,0 +1,297 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: payments-virtual-service
+spec:
+  hosts:
+  - payments
+  http:
+  - route:
+    - destination:
+        host: payments
+        subset: v1
+      weight: 100       
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: payments-destination-rule
+spec:
+  host: payments
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: payment-checker-virtual-service
+spec:
+  hosts:
+  - payment-checker
+  http:
+  - fault:
+      delay:
+        fixedDelay: 3s
+        percent: 10
+    route:
+    - destination:
+        host: payment-checker
+        subset: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: payment-checker-destination-rule
+spec:
+  host: payment-checker
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: acquirer-virtual-service
+spec:
+  hosts:
+  - acquirer
+  http:
+  - fault:
+      abort:
+        httpStatus: 500
+        percent: 5        
+    route:
+    - destination:
+        host: acquirer
+        subset: v1     
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: acquirer-destination-rule
+spec:
+  host: acquirer
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: crm-virtual-service
+spec:
+  hosts:
+  - crm
+  http:
+  - route:
+    - destination:
+        host: crm
+        subset: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: crm-destination-rule
+spec:
+  host: crm
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: vault-virtual-service
+spec:
+  hosts:
+  - vault
+  http:
+  - route:
+    - destination:
+        host: vault
+        subset: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: vault-destination-rule
+spec:
+  host: vault
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: systems-virtual-service
+spec:
+  hosts:
+  - systems
+  http:
+  - route:
+    - destination:
+        host: systems
+        subset: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: systems-destination-rule
+spec:
+  host: systems
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: payments-authorization-virtual-service
+spec:
+  hosts:
+  - payments-authorization
+  http:
+  - route:
+    - destination:
+        host: payments-authorization
+        subset: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: payments-authorization-destination-rule
+spec:
+  host: payments-authorization
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: issuer-one-virtual-service
+spec:
+  hosts:
+  - issuer-one
+  http:
+  - route:
+    - destination:
+        host: issuer-one
+        subset: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: issuer-one-destination-rule
+spec:
+  host: issuer-one
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: customers-virtual-service
+spec:
+  hosts:
+  - customers
+  http:
+  - route:
+    - destination:
+        host: customers
+        subset: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: customers-destination-rule
+spec:
+  host: customers
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: claims-virtual-service
+spec:
+  hosts:
+  - claims
+  http:
+  - route:
+    - destination:
+        host: claims
+        subset: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: claims-destination-rule
+spec:
+  host: claims
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: fraud-detection-virtual-service
+spec:
+  hosts:
+  - fraud-detection
+  http:
+  - route:
+    - destination:
+        host: fraud-detection
+        subset: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: fraud-detection-destination-rule
+spec:
+  host: fraud-detection
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: product-virtual-service
+spec:
+  hosts:
+  - product
+  http:
+  - route:
+    - destination:
+        host: product
+        subset: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: product-destination-rule
+spec:
+  host: product
+  subsets:
+  - name: v1
+    labels:
+      version: v1            

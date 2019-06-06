@@ -12,10 +12,10 @@ items:
     name: issuer-one
   spec:
     ports:
-    - name: http
-      port: 8080
+    - name: grpc
+      port: 50051
       protocol: TCP
-      targetPort: 8080
+      targetPort: 50051
     selector:
       app: issuer-one
       group: tech.claudioed
