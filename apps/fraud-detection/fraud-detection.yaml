@@ -46,7 +46,7 @@ items:
                 - name: MONGO_HOST
                   value: mongodb.database.svc.cluster.local
                 - name: NATS_HOST
-                  value: 10.39.251.97
+                  value: 10.0.8.118
                 - name: NATS_USER
                   value: nats_client
                 - name: NATS_PASS

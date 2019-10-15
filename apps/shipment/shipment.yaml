@@ -57,7 +57,7 @@ items:
               fieldRef:
                 fieldPath: metadata.namespace
           - name: NATS_HOST
-            value: "nats://10.39.251.97:4222"
+            value: "nats://10.0.13.112:4222"
           - name: NATS_USER
             value: "nats_client"
           - name: NATS_PASS
