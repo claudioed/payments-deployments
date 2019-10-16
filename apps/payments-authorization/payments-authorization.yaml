@@ -9,6 +9,9 @@ items:
       expose: "true"
       app: payments-authorization
       group: tech.claudioed
+      stack: quarkus
+      interface: rest
+      language: java         
     name: payments-authorization
   spec:
     ports:
@@ -31,6 +34,9 @@ items:
       expose: "false"
       app: payments-authorization
       group: tech.claudioed
+      stack: quarkus
+      interface: rest
+      language: java         
     name: payments-authorization
   spec:
     replicas: 1
@@ -49,6 +55,9 @@ items:
           app: payments-authorization
           version: v1
           group: tech.claudioed
+          stack: quarkus
+          interface: rest
+          language: java   
       spec:
         containers:
         - env:

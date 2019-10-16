@@ -9,6 +9,9 @@ items:
       expose: "true"
       app: issuer-one
       group: tech.claudioed
+      stack: spring
+      interface: grpc
+      language: java            
     name: issuer-one
   spec:
     ports:
@@ -31,6 +34,9 @@ items:
       expose: "false"
       app: issuer-one
       group: tech.claudioed
+      stack: spring
+      interface: grpc
+      language: java      
     name: issuer-one
   spec:
     replicas: 1
@@ -49,6 +55,9 @@ items:
           app: issuer-one
           version: v1
           group: tech.claudioed
+          stack: spring
+          interface: grpc
+          language: java
       spec:
         containers:
         - env:

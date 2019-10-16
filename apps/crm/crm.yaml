@@ -9,6 +9,9 @@ items:
       expose: "true"
       app: crm
       group: tech.claudioed
+      stack: spring
+      interface: rest
+      language: java      
     name: crm
   spec:
     ports:
@@ -31,6 +34,9 @@ items:
       expose: "false"
       app: crm
       group: tech.claudioed
+      stack: spring
+      interface: rest
+      language: java      
     name: crm
   spec:
     replicas: 1
@@ -49,6 +55,9 @@ items:
           app: crm
           version: v1
           group: tech.claudioed
+          stack: spring
+          interface: rest
+          language: java
       spec:
         containers:
         - env:

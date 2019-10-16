@@ -9,6 +9,9 @@ items:
       expose: "true"
       app: claims
       group: tech.claudioed
+      stack: vert.x
+      interface: rest
+      language: java
     name: claims
   spec:
     ports:
@@ -35,12 +38,18 @@ items:
       matchLabels:
         app: claims
         group: tech.claudioed
+        stack: vert.x
+        interface: rest   
+        language: java             
     template:
       metadata:
         labels:
           app: claims
           version: v1
           group: tech.claudioed
+          stack: vert.x
+          interface: rest   
+          language: java 
       spec:
         containers:
         - env:

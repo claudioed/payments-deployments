@@ -9,6 +9,9 @@ items:
       expose: "true"
       app: payment-checker
       group: tech.claudioed
+      stack: spring
+      interface: rest
+      language: java      
     name: payment-checker
   spec:
     ports:
@@ -31,6 +34,9 @@ items:
       expose: "false"
       app: payment-checker
       group: tech.claudioed
+      stack: spring
+      interface: rest
+      language: java            
     name: payment-checker
   spec:
     replicas: 1
@@ -49,6 +55,9 @@ items:
           app: payment-checker
           version: v1
           group: tech.claudioed
+          stack: spring
+          interface: rest
+          language: java                
       spec:
         containers:   
         - env:

@@ -9,6 +9,9 @@ items:
       expose: "true"
       app: vault
       group: tech.claudioed
+      stack: micronaut
+      interface: grpc
+      language: java         
     name: vault
   spec:
     ports:
@@ -27,6 +30,9 @@ items:
       expose: "false"
       app: vault
       group: tech.claudioed
+      stack: micronaut
+      interface: grpc
+      language: java        
     name: vault
   spec:
     replicas: 1
@@ -41,6 +47,9 @@ items:
           app: vault
           version: v1
           group: tech.claudioed
+          stack: micronaut
+          interface: grpc
+          language: java            
       spec:
         containers:
         - env:

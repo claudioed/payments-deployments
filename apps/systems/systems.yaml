@@ -9,6 +9,9 @@ items:
       expose: "true"
       app: systems
       group: tech.claudioed
+      stack: spring-webflux
+      interface: rest
+      language: java          
     name: systems
   spec:
     ports:
@@ -31,6 +34,9 @@ items:
       expose: "false"
       app: systems
       group: tech.claudioed
+      stack: spring-webflux
+      interface: rest
+      language: java          
     name: systems
   spec:
     replicas: 1
@@ -49,6 +55,9 @@ items:
           app: systems
           version: v1
           group: tech.claudioed
+          stack: spring-webflux
+          interface: rest
+          language: java             
       spec:
         containers:
         - env:

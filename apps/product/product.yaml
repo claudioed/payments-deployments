@@ -7,6 +7,9 @@ items:
       labels:
         expose: "true"
         app: product
+        stack: quarkus
+        interface: rest
+        language: java          
       name: product
     spec:
       ports:
@@ -23,6 +26,9 @@ items:
         version: v1
         expose: "false"
         app: product
+        stack: quarkus
+        interface: rest
+        language: java        
       name: product
     spec:
       replicas: 1
@@ -35,6 +41,9 @@ items:
           labels:
             app: product
             version: v1
+            stack: quarkus
+            interface: rest
+            language: java            
         spec:
           containers:
             - env:

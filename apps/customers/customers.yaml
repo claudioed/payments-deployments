@@ -9,6 +9,9 @@ items:
       expose: "true"
       app: customers
       group: tech.claudioed
+      stack: vert.x
+      interface: grpc
+      language: kotlin      
     name: customers
   spec:
     ports:
@@ -27,6 +30,9 @@ items:
       expose: "false"
       app: customers
       group: tech.claudioed
+      stack: vert.x
+      interface: grpc
+      language: kotlin      
     name: customers
   spec:
     replicas: 1
@@ -41,6 +47,9 @@ items:
           app: customers
           version: v1
           group: tech.claudioed
+          stack: vert.x
+          interface: grpc
+          language: kotlin                
       spec:
         containers:
         - env:
