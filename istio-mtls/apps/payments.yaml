@@ -6,12 +6,14 @@ items:
   metadata:
     labels:
       expose: "true"
-      app: acquirer
+      app: payments
       group: tech.claudioed
       stack: spring
       interface: rest
-      language: java   
-    name: acquirer
+      language: java            
+    name: payments
+    annotations:
+      sidecar.istio.io/rewriteAppHTTPProbers: "true"
   spec:
     ports:
     - name: http
@@ -19,7 +21,7 @@ items:
       protocol: TCP
       targetPort: 8080
     selector:
-      app: acquirer
+      app: payments
       group: tech.claudioed
 - apiVersion: extensions/v1beta1
   kind: Deployment
@@ -28,21 +30,22 @@ items:
       prometheus.io/scrape: "true"
       prometheus.io/port: "8080"
       prometheus.io/path: "/actuator/prometheus"
+      sidecar.istio.io/rewriteAppHTTPProbers: "true"      
     labels:
       version: v1
       expose: "false"
-      app: acquirer
+      app: payments
       group: tech.claudioed
       stack: spring
       interface: rest
-      language: java         
-    name: acquirer
+      language: java          
+    name: payments
   spec:
     replicas: 1
     revisionHistoryLimit: 2
     selector:
       matchLabels:
-        app: acquirer
+        app: payments
         group: tech.claudioed
     template:
       metadata:
@@ -51,12 +54,12 @@ items:
           prometheus.io/port: "8080"
           prometheus.io/path: "/actuator/prometheus"
         labels:
-          app: acquirer
+          app: payments
           version: v1
           group: tech.claudioed
           stack: spring
           interface: rest
-          language: java   
+          language: java              
       spec:
         containers:       
         - env:
@@ -65,7 +68,7 @@ items:
               fieldRef:
                 fieldPath: metadata.namespace
           - name: JAEGER_SERVICE_NAME
-            value: acquirer            
+            value: payments        
           - name: JAEGER_ENDPOINT
             value: "http://jaeger-collector.istio-system.svc:14268/api/traces"
           - name: JAEGER_PROPAGATION
@@ -76,23 +79,27 @@ items:
             value: "1"
           - name: MONGO_HOST
             value: mongodb.database.svc.cluster.local
+          - name: REGISTER_SVC_URL
+            value: http://acquirer:8080
+          - name: REQUESTER_SVC_URL
+            value: http://payment-checker:8080
           - name: SERVER_PORT
             value: "8080"
           - name: HTTP_LEVEL_LOGS
             value: "INFO"
-          - name: ISSUER_DATA_URL
-            value: "http://systems.payments.svc.cluster.local"            
-          - name: ISSUER_DATA_PORT
-            value: "8080"
-          - name: CRM_DATA_URL
-            value: "http://systems.payments.svc.cluster.local"
-          - name: CRM_DATA_PORT
-            value: "8080"
-          - name: VAULT_URL
-            value: "vault.payments.svc.cluster.local"
-          - name: VAULT_PORT
-            value: "50051"
-          image: claudioed/acquirer:0.0.1-SNAPSHOT
+          - name: NATS_HOST
+            value: "nats://10.0.8.118:4222"
+          - name: NATS_USER
+            value: "nats_client"
+          - name: NATS_PASS
+            value: "DZ3mFLXEDO"
+          - name: CUSTOMER_SERVICE_HOST
+            value: customers.payments.svc.cluster.local
+          - name: CUSTOMER_SERVICE_PORT
+            value: '50051'   
+          - name: PAYMENT_AUTH_SVC_URL
+            value: http://payments-authorization:8080                  
+          image: claudioed/payments:0.0.1-SNAPSHOT
           imagePullPolicy: Always
           resources:
             requests:
@@ -107,7 +114,7 @@ items:
               port: 8080
               scheme: HTTP
             initialDelaySeconds: 180
-          name: acquirer
+          name: payments
           ports:
           - containerPort: 8080
             name: http
@@ -119,4 +126,4 @@ items:
               scheme: HTTP
             initialDelaySeconds: 10
           securityContext:
-            privileged: false
+            privileged: false  
