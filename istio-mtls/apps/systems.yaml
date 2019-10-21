@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: List
 items:
@@ -6,14 +7,12 @@ items:
   metadata:
     labels:
       expose: "true"
-      app: payments
+      app: systems
       group: tech.claudioed
-      stack: spring
+      stack: spring-webflux
       interface: rest
-      language: java            
-    name: payments
-    annotations:
-      sidecar.istio.io/rewriteAppHTTPProbers: "true"
+      language: java          
+    name: systems
   spec:
     ports:
     - name: http
@@ -21,7 +20,7 @@ items:
       protocol: TCP
       targetPort: 8080
     selector:
-      app: payments
+      app: systems
       group: tech.claudioed
 - apiVersion: extensions/v1beta1
   kind: Deployment
@@ -30,22 +29,22 @@ items:
       prometheus.io/scrape: "true"
       prometheus.io/port: "8080"
       prometheus.io/path: "/actuator/prometheus"
-      sidecar.istio.io/rewriteAppHTTPProbers: "true"      
+      sidecar.istio.io/rewriteAppHTTPProbers: "true"
     labels:
       version: v1
-      app: payments      
       expose: "false"
+      app: systems
       group: tech.claudioed
-      stack: spring
+      stack: spring-webflux
       interface: rest
       language: java          
-    name: payments
+    name: systems
   spec:
     replicas: 1
     revisionHistoryLimit: 2
     selector:
       matchLabels:
-        app: payments
+        app: systems
         group: tech.claudioed
     template:
       metadata:
@@ -54,67 +53,45 @@ items:
           prometheus.io/port: "8080"
           prometheus.io/path: "/actuator/prometheus"
         labels:
-          app: payments
+          app: systems
           version: v1
           group: tech.claudioed
-          stack: spring
+          stack: spring-webflux
           interface: rest
-          language: java              
+          language: java             
       spec:
-        containers:       
+        containers:
         - env:
           - name: KUBERNETES_NAMESPACE
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
           - name: JAEGER_SERVICE_NAME
-            value: payments        
-          - name: JAEGER_ENDPOINT
-            value: "http://jaeger-collector.istio-system.svc:14268/api/traces"
-          - name: JAEGER_PROPAGATION
-            value: b3
-          - name: JAEGER_SAMPLER_TYPE
-            value: const
-          - name: JAEGER_SAMPLER_PARAM
-            value: "1"
+            value: systems
           - name: MONGO_HOST
             value: mongodb.database.svc.cluster.local
-          - name: REGISTER_SVC_URL
-            value: http://acquirer:8080
-          - name: REQUESTER_SVC_URL
-            value: http://payment-checker:8080
           - name: SERVER_PORT
             value: "8080"
+          - name: JAEGER_HTTP_COLLECTOR_URL
+            value: "http://jaeger-collector:14268/api/traces"
           - name: HTTP_LEVEL_LOGS
-            value: "INFO"
-          - name: NATS_HOST
-            value: "nats://10.0.8.118:4222"
-          - name: NATS_USER
-            value: "nats_client"
-          - name: NATS_PASS
-            value: "DZ3mFLXEDO"
-          - name: CUSTOMER_SERVICE_HOST
-            value: customers.payments.svc.cluster.local
-          - name: CUSTOMER_SERVICE_PORT
-            value: '50051'   
-          - name: PAYMENT_AUTH_SVC_URL
-            value: http://payments-mtls-authorization:8080                  
-          image: claudioed/payments:0.0.1-SNAPSHOT
+            value: "INFO"                  
+          image: claudioed/systems:0.0.1-SNAPSHOT
           imagePullPolicy: Always
-          resources:
-            requests:
-              cpu: 128m
-              memory: 512Mi
-            limits:
-              cpu: 256m
-              memory: 1024Mi          
           livenessProbe:
             httpGet:
               path: /actuator/health
               port: 8080
               scheme: HTTP
             initialDelaySeconds: 180
-          name: payments
+          name: systems
+          resources:
+            requests:
+              cpu: 128m
+              memory: 512Mi
+            limits:
+              cpu: 256m
+              memory: 1024Mi
           ports:
           - containerPort: 8080
             name: http
@@ -126,4 +103,4 @@ items:
               scheme: HTTP
             initialDelaySeconds: 10
           securityContext:
-            privileged: false  
+            privileged: false

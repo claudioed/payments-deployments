@@ -7,57 +7,56 @@ items:
   metadata:
     labels:
       expose: "true"
-      app: crm
+      app: issuer-one
       group: tech.claudioed
       stack: spring
-      interface: rest
-      language: java      
-    name: crm
+      interface: grpc
+      language: java            
+    name: issuer-one
   spec:
     ports:
-    - name: http
-      port: 8080
+    - name: grpc
+      port: 50051
       protocol: TCP
-      targetPort: 8080
+      targetPort: 50051
     selector:
-      app: crm
+      app: issuer-one
       group: tech.claudioed
 - apiVersion: extensions/v1beta1
   kind: Deployment
   metadata:
     annotations:
       prometheus.io/scrape: "true"
-      prometheus.io/port: "8080"
+      prometheus.io/port: "50051"
       prometheus.io/path: "/actuator/prometheus"
     labels:
       version: v1
       expose: "false"
-      app: crm
+      app: issuer-one
       group: tech.claudioed
       stack: spring
-      interface: rest
+      interface: grpc
       language: java      
-    name: crm
+    name: issuer-one
   spec:
     replicas: 1
     revisionHistoryLimit: 2
     selector:
       matchLabels:
-        app: crm
+        app: issuer-one
         group: tech.claudioed
     template:
       metadata:
         annotations:
           prometheus.io/scrape: "true"
-          prometheus.io/port: "8080"
+          prometheus.io/port: "50051"
           prometheus.io/path: "/actuator/prometheus"
-          sidecar.istio.io/rewriteAppHTTPProbers: "true"             
         labels:
-          app: crm
+          app: issuer-one
           version: v1
           group: tech.claudioed
           stack: spring
-          interface: rest
+          interface: grpc
           language: java
       spec:
         containers:
@@ -66,51 +65,41 @@ items:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          - name: ISSUER_NAME
+            value: issuer-one                
           - name: JAEGER_SERVICE_NAME
-            value: crm
+            value: issuer-one
           - name: MONGO_HOST
             value: mongodb.database.svc.cluster.local
-          - name: SERVER_PORT
-            value: "8080"
-          - name: JAEGER_HTTP_COLLECTOR_URL
+          - name: GRPC_SERVER_PORT
+            value: "50051"            
+          - name: JAEGER_ENDPOINT
             value: "http://jaeger-collector:14268/api/traces"
           - name: HTTP_LEVEL_LOGS
-            value: "INFO"           
+            value: "INFO"
           - name: NATS_HOST
             value: "nats://10.0.8.118:4222"
           - name: NATS_USER
             value: "nats_client"
           - name: NATS_PASS
             value: "DZ3mFLXEDO"
-          - name: CUSTOMER_SERVICE_HOST
-            value: customers.payments-mtls.svc.cluster.local
-          - name: CUSTOMER_SERVICE_PORT
-            value: "50051"                          
-          image: claudioed/crm:0.0.1-SNAPSHOT
+          - name: VAULT_SERVICE_HOST
+            value: "vault.payments-mtls.svc.cluster.local"
+          - name: VAULT_SERVICE_PORT
+            value: "50051"                        
+          image: claudioed/issuer:0.0.1-SNAPSHOT
           imagePullPolicy: Always
+          name: issuer-one
           resources:
             requests:
               cpu: 128m
               memory: 512Mi
             limits:
               cpu: 256m
-              memory: 1024Mi            
-          livenessProbe:
-            httpGet:
-              path: /actuator/health
-              port: 8080
-              scheme: HTTP
-            initialDelaySeconds: 180
-          name: crm
+              memory: 1024Mi
           ports:
-          - containerPort: 8080
-            name: http
+          - containerPort: 50051
+            name: grpc
             protocol: TCP
-          readinessProbe:
-            httpGet:
-              path: /actuator/health
-              port: 8080
-              scheme: HTTP
-            initialDelaySeconds: 10
           securityContext:
             privileged: false
