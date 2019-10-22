@@ -24,3 +24,13 @@ spec:
   - name: v1
     labels:
       version: v1
+---
+apiVersion: "authentication.istio.io/v1alpha1"
+kind: "Policy"
+metadata:
+  name: "customers-policy-mtls"
+spec:
+  targets:
+  - name: customers.payments-mtls.svc.cluster.local
+  peers:
+  - mtls: {}            

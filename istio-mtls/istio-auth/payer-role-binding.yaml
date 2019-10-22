@@ -1,0 +1,12 @@
+apiVersion: "rbac.istio.io/v1alpha1"
+kind: ServiceRoleBinding
+metadata:
+  name: payer-user-role-binding
+  namespace: payments-mtls
+spec:
+  subjects:
+  - properties:
+      request.auth.claims[scope]: "payer"
+  roleRef:
+    kind: ServiceRole
+    name: "payer-user-role" 
