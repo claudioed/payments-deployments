@@ -6,6 +6,10 @@ spec:
   mode: 'ON_WITH_INCLUSION'                     
   inclusion:
     services:
-    - "sa-frontend.default.svc.cluster.local"
-    - "sa-web-app.default.svc.cluster.local" 
-    - "sa-feedback.default.svc.cluster.local"   
+    - "crm.payments-mtls.svc.cluster.local"
+    - "customers.payments-mtls.svc.cluster.local" 
+    - "issuer-one.payments-mtls.svc.cluster.local"
+    - "payment-checker.payments-mtls.svc.cluster.local"
+    - "payments.payments-mtls.svc.cluster.local"
+    - "systems.payments-mtls.svc.cluster.local"
+    - "vault.payments-mtls.svc.cluster.local"

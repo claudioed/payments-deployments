@@ -1,0 +1,17 @@
+apiVersion: "authentication.istio.io/v1alpha1"
+kind: "Policy"
+metadata:
+  name: "payments-authn"
+spec:
+  targets:
+  - name: payments
+  peers:
+  - mtls: {}
+  origins:
+  - jwt:
+      issuer: "http://34.70.204.126/auth/realms/payments"
+      jwksUri: "http://34.70.204.126/auth/realms/payments/protocol/openid-connect/certs"
+      trigger_rules:
+        - excluded_paths:
+          - exact: /actuator/health     
+  principalBinding: USE_ORIGIN

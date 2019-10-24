@@ -31,6 +31,6 @@ metadata:
   name: "payment-checker-policy-mtls"
 spec:
   targets:
-  - name: payment-checker.payments-mtls.svc.cluster.local
+  - name: "payment-checker"
   peers:
   - mtls: {}            

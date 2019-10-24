@@ -28,6 +28,6 @@ metadata:
   name: "issuer-one-policy-mtls"
 spec:
   targets:
-  - name: issuer-one.payments-mtls.svc.cluster.local
+  - name: issuer-one
   peers:
   - mtls: {}         

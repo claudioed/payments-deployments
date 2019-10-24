@@ -31,6 +31,6 @@ metadata:
   name: "crm-policy-mtls"
 spec:
   targets:
-  - name: crm.payments-mtls.svc.cluster.local
+  - name: "crm"
   peers:
   - mtls: {}      

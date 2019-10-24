@@ -6,7 +6,7 @@ metadata:
 spec:
   subjects:
   - properties:
-      request.auth.claims[scope]: "payer"
+      request.auth.claims[scope]: "payments:write"
   roleRef:
     kind: ServiceRole
     name: "payer-user-role" 

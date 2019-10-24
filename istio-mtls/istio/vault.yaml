@@ -31,6 +31,6 @@ metadata:
   name: "vault-policy-mtls"
 spec:
   targets:
-  - name: vault.payments-mtls.svc.cluster.local
+  - name: vault
   peers:
   - mtls: {}             

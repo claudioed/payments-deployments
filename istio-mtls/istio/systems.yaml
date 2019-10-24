@@ -31,6 +31,6 @@ metadata:
   name: "systems-policy-mtls"
 spec:
   targets:
-  - name: systems.payments-mtls.svc.cluster.local
+  - name: systems
   peers:
   - mtls: {}          

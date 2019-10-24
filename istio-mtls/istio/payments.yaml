@@ -29,6 +29,6 @@ metadata:
   name: "payments-policy-mtls"
 spec:
   targets:
-  - name: payments.payments-mtls.svc.cluster.local
+  - name: payments
   peers:
   - mtls: {}           
