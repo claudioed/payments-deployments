@@ -24,4 +24,3 @@ spec:
         host: "crm.payments-mtls.svc.cluster.local"
         port:
           number: 8080
-;
