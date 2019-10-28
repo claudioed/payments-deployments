@@ -18,6 +18,9 @@ metadata:
   name: payments-destination-rule-mtls
 spec:
   host: payments.payments-mtls.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL   
   subsets:
   - name: v1
     labels:

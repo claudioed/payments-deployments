@@ -80,9 +80,9 @@ items:
           - name: MONGO_HOST
             value: mongodb.database.svc.cluster.local
           - name: REGISTER_SVC_URL
-            value: http://acquirer:8080
+            value: http://acquirer.payments-mtls.svc.cluster.local:8080
           - name: REQUESTER_SVC_URL
-            value: http://payment-checker:8080
+            value: http://payment-checker.payments-mtls.svc.cluster.local:8080
           - name: SERVER_PORT
             value: "8080"
           - name: HTTP_LEVEL_LOGS
@@ -94,11 +94,11 @@ items:
           - name: NATS_PASS
             value: "DZ3mFLXEDO"
           - name: CUSTOMER_SERVICE_HOST
-            value: customers.payments.svc.cluster.local
+            value: customers.payments-mtls.svc.cluster.local
           - name: CUSTOMER_SERVICE_PORT
             value: '50051'   
           - name: PAYMENT_AUTH_SVC_URL
-            value: http://payments-mtls-authorization:8080                  
+            value: http://payments-authorization.payments-mtls.svc.cluster.local:8080                  
           image: claudioed/payments:0.0.1-SNAPSHOT
           imagePullPolicy: Always
           resources:

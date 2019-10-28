@@ -1,22 +1,22 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: issuer-one-virtual-service-mtls
+  name: facade-virtual-service-mtls
 spec:
   hosts:
-  - issuer-one.payments-mtls.svc.cluster.local
+  - facade.payments-mtls.svc.cluster.local
   http:
   - route:
     - destination:
-        host: issuer-one.payments-mtls.svc.cluster.local
+        host: facade.payments-mtls.svc.cluster.local
         subset: v1
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: issuer-one-destination-rule-mtls
+  name: facade-destination-rule-mtls
 spec:
-  host: issuer-one.payments-mtls.svc.cluster.local
+  host: facade.payments-mtls.svc.cluster.local
   trafficPolicy:
     tls:
       mode: ISTIO_MUTUAL  
@@ -28,9 +28,9 @@ spec:
 apiVersion: "authentication.istio.io/v1alpha1"
 kind: "Policy"
 metadata:
-  name: "issuer-one-policy-mtls"
+  name: "facade-policy-mtls"
 spec:
   targets:
-  - name: issuer-one
+  - name: "facade"
   peers:
-  - mtls: {}         
+  - mtls: {}      
