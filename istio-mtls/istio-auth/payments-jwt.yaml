@@ -12,6 +12,8 @@ spec:
       issuer: "http://34.70.204.126/auth/realms/payments"
       jwksUri: "http://34.70.204.126/auth/realms/payments/protocol/openid-connect/certs"
       trigger_rules:
+        - included_paths:
+          - prefix: /api
         - excluded_paths:
-          - exact: /actuator/health     
+          - exact: /actuator/health        
   principalBinding: USE_ORIGIN

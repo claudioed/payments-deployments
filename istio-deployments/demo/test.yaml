@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: crypto-ecc-virtual-service
+  namespace: payments
+spec:
+  hosts:
+  - ms-crypto-ecc
+  http:
+  - route:
+    - destination:
+        host: ms-crypto-ecc
+        subset: v1
+      weight: 50
+    - destination:
+        host: ms-crypto-ecc
+        subset: v1
+      weight: 50
+    timeout: 10s
+    retries:
+      attempts: 3
+      perTryTimeout: 2s
+    fault:
+        abort:
+          percentage:
+            value: 50.0
+          httpStatus: 500

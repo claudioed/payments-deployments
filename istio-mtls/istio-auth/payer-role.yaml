@@ -18,5 +18,5 @@ spec:
     methods: ["GET", "HEAD","POST"]
     paths: "*"    
   - services: ["crm.payments-mtls.svc.cluster.local"]
-    methods: ["GET", "HEAD","POST"]                  
+    methods: ["GET", "HEAD"]                  
     paths: "*"    
